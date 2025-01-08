@@ -1,9 +1,8 @@
 # Description
 
-In **h4llw4y**, you control a player navigating through a hallway, with walls represented as `#` characters. The game features:
+In **h4llw4y**, you control a player navigating through a hallway, with walls represented as characters. The game features:
 
 - A **first-person view** of the hallway rendered using a **raycasting technique**.
-- A **dynamic minimap** showing the player’s position relative to the walls.
 - A **simple control system** to move and rotate the player.
   
 The game runs in your terminal using the Python `curses` library, which enables the rendering of the display and handling of user input without the need for an external graphics engine.
