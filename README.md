@@ -12,24 +12,32 @@ The game runs in your terminal using the Python `curses` library, which enables 
 
 The **raycasting** algorithm is used to simulate a 3D perspective on a 2D grid. Here's a breakdown of how it works:
 
-1. **Player Position**: The player is represented by coordinates `(player_x, player_y)` and an `angle` that determines which direction the player is facing.
+1. **Player Position**: The player is represented by coordinates `player_x`, `player_y` and an `angle` that determines which direction the player is facing.
+
 2. **Raycasting**: Rays are cast from the player's position in a series of directions (based on the player’s angle) across the 2D map.
    - The rays move in the direction defined by the player's angle and check for intersections with the walls (represented by `#`).
    - For each ray, the distance between the player and the closest wall is calculated. This distance is used to determine how high to render the wall on the screen (based on the inverse of the distance).
-   
-   The formula for calculating the intersection point of a ray with a wall is derived using basic trigonometry. For a given ray angle \( \theta \), the coordinates of the intersection point can be expressed as:
 
-   $$\[\text{ray\_x} = \text{player\_x} + \text{distance} \cdot \cos(\theta)\]$$
-   $$\[\text{ray\_y} = \text{player\_y} + \text{distance} \cdot \sin(\theta)\]$$
+   The formula for calculating the intersection point of a ray with a wall is derived using basic trigonometry. For a given ray angle `θ`, the coordinates of the intersection point can be expressed as:
+
+   ```
+   ray_x = player_x + distance * cos(θ)
+   ray_y = player_y + distance * sin(θ)
+   ```
 
 3. **Field of View (FOV)**: The field of view defines how wide the "camera" is, simulating the player's peripheral vision. A common FOV value for 3D games is 60 degrees. To calculate the rays from the player's position, we need to cast rays at angles between the player's angle minus half of the FOV and the player's angle plus half of the FOV:
 
-   $$\[\text{ray\_angle} = \text{player\_angle} - \frac{\text{FOV}}{2} + \frac{\text{col}}{\text{ray\_count}} \cdot \text{FOV}\]$$
+   ```
+   ray_angle = player_angle - (FOV / 2) + (col / ray_count) * FOV
+   ```
+
    where `col` is the column in the screen and `ray_count` is the total number of rays to cast.
 
 4. **Wall Rendering**: The distance to the wall is inversely proportional to the height of the wall on the screen. Closer walls will be rendered higher, while distant walls will appear shorter. The height of each wall is calculated using the following formula:
 
-   $$\[\text{wall\_height} = \frac{\text{screen\_height}}{2 \cdot \text{distance}}\]$$
+   ```
+   wall_height = screen_height / (2 * distance)
+   ```
 
 5. **Minimap**: The minimap is a scaled-down representation of the hallway grid. It shows walls as `#` characters and the player’s position as the letter `i`. The map is scaled down to fit within a smaller area in the terminal.
 
@@ -43,7 +51,7 @@ The **raycasting** algorithm is used to simulate a 3D perspective on a 2D grid. 
 
 # Installation and Testing
 
-### Dependencies
+## Dependencies
 
 1. **Python 3**: The game requires Python 3, which you can download and install from [python.org](https://www.python.org/downloads/).
 2. **Curses Library**: The game uses the `curses` library for rendering the game in the terminal. It is typically included by default in Unix-based systems (Linux/macOS). If you are using Windows, you will need to install the `windows-curses` package:
@@ -51,7 +59,7 @@ The **raycasting** algorithm is used to simulate a 3D perspective on a 2D grid. 
    pip install windows-curses
    ```
 
-### Installation for All Operating Systems
+## Installation for All Operating Systems
 
 1. **Clone the Repository**:
    ```bash
@@ -71,7 +79,7 @@ The **raycasting** algorithm is used to simulate a 3D perspective on a 2D grid. 
    python3 main.py
    ```
 
-### Testing the Game
+## Testing the Game
 
 The game should run directly in the terminal. Resize the terminal window and make sure the game adjusts accordingly. Use the arrow keys and the `W`, `A`, `S`, `D` keys to move and rotate the player. Make sure the interactions with the artifacts and box work correctly.
 
