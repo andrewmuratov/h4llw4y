@@ -17,26 +17,26 @@ The **raycasting** algorithm is used to simulate a 3D perspective on a 2D grid. 
    - The rays move in the direction defined by the player's angle and check for intersections with the walls (represented by `#`).
    - For each ray, the distance between the player and the closest wall is calculated. This distance is used to determine how high to render the wall on the screen (based on the inverse of the distance).
    
-   The formula for calculating the intersection point of a ray with a wall is derived using basic trigonometry. For a given ray angle θ, the coordinates of the intersection point can be expressed as:
-   
+   The formula for calculating the intersection point of a ray with a wall is derived using basic trigonometry. For a given ray angle \( \theta \), the coordinates of the intersection point can be expressed as:
+
    \[
-   \text{ray_x} = \text{player_x} + \text{distance} \cdot \cos(\theta)
+   \text{ray\_x} = \text{player\_x} + \text{distance} \cdot \cos(\theta)
    \]
    \[
-   \text{ray_y} = \text{player_y} + \text{distance} \cdot \sin(\theta)
+   \text{ray\_y} = \text{player\_y} + \text{distance} \cdot \sin(\theta)
    \]
 
 3. **Field of View (FOV)**: The field of view defines how wide the "camera" is, simulating the player's peripheral vision. A common FOV value for 3D games is 60 degrees. To calculate the rays from the player's position, we need to cast rays at angles between the player's angle minus half of the FOV and the player's angle plus half of the FOV:
-   
+
    \[
-   \text{ray_angle} = \text{player_angle} - \frac{\text{FOV}}{2} + \frac{\text{col}}{\text{ray_count}} \cdot \text{FOV}
+   \text{ray\_angle} = \text{player\_angle} - \frac{\text{FOV}}{2} + \frac{\text{col}}{\text{ray\_count}} \cdot \text{FOV}
    \]
    where `col` is the column in the screen and `ray_count` is the total number of rays to cast.
 
 4. **Wall Rendering**: The distance to the wall is inversely proportional to the height of the wall on the screen. Closer walls will be rendered higher, while distant walls will appear shorter. The height of each wall is calculated using the following formula:
 
    \[
-   \text{wall_height} = \frac{\text{screen_height}}{2 \cdot \text{distance}}
+   \text{wall\_height} = \frac{\text{screen\_height}}{2 \cdot \text{distance}}
    \]
 
 5. **Minimap**: The minimap is a scaled-down representation of the hallway grid. It shows walls as `#` characters and the player’s position as the letter `i`. The map is scaled down to fit within a smaller area in the terminal.
