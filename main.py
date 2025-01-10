@@ -20,7 +20,6 @@ box_y = hallway_length / 4
 game_won = False
 min_terminal_height = 10
 min_terminal_width = 40
-message_time = 0
 
 def cast_ray(px, py, angle):
     for depth in range(1, hallway_length * 10):
@@ -49,7 +48,7 @@ def render_hallway(stdscr, show_prompt, box_prompt, artifact_message, box_intera
         wall_height = int(height / (distance * 2))
         column = int(col / ray_count * width)
 
-        wall_char = '.'
+        wall_char = ' '
         color_pair = curses.color_pair(5)
 
         if ray_x is not None and ray_y is not None:
@@ -75,10 +74,6 @@ def render_hallway(stdscr, show_prompt, box_prompt, artifact_message, box_intera
         for row in range(height // 2 - wall_height, height // 2 + wall_height):
             if 0 <= row < height:
                 stdscr.addch(row, column, wall_char, color_pair)
-
-        for row in range(height // 2 + wall_height, height):
-            if 0 <= row < height:
-                stdscr.addch(row, column, '.', curses.color_pair(5))
 
     if show_prompt:
         interaction_prompt = "Press SPACE to pick up the artifact"
@@ -113,7 +108,7 @@ def move_player(dx, dy):
                 player_y = new_y
 
 def main(stdscr):
-    global player_x, player_y, player_angle, artifact_picked, game_won, message_time
+    global player_x, player_y, player_angle, artifact_picked, game_won
 
     curses.curs_set(0)
     stdscr.nodelay(1)
@@ -148,16 +143,8 @@ def main(stdscr):
 
         show_prompt = not artifact_picked and abs(player_x - artifact_x) < 0.5 and abs(player_y - artifact_y) < 0.5
         box_prompt = artifact_picked and abs(player_x - box_x) < 0.5 and abs(player_y - box_y) < 0.5
-        box_interaction_message = None
-        artifact_message = None
-
-        if artifact_picked:
-            artifact_message = "You have the artifact in your inventory"
-            message_time = time.time()
-
-        if game_won:
-            box_interaction_message = "Congratulations! You have won the game!"
-            message_time = time.time()
+        artifact_message = "You have the artifact in your inventory" if artifact_picked else None
+        box_interaction_message = "Congratulations! You have won the game!" if game_won else None
 
         if key == curses.KEY_UP or key == ord('w'):
             move_player(speed * math.cos(player_angle), speed * math.sin(player_angle))
@@ -175,23 +162,11 @@ def main(stdscr):
             if show_prompt:
                 artifact_picked = True
                 needs_render = True
-            elif box_prompt:
-                if artifact_picked:
-                    game_won = True
-                    needs_render = True
-                else:
-                    box_interaction_message = "Pick up the artifact to put it in the box."
-                    needs_render = True
+            elif box_prompt and artifact_picked:
+                game_won = True
+                needs_render = True
         elif key == ord('q'):
             break
-
-        if artifact_message and time.time() - message_time > 5:
-            artifact_message = None
-            needs_render = True
-
-        if box_interaction_message and time.time() - message_time > 5:
-            box_interaction_message = None
-            needs_render = True
 
         if needs_render:
             render_hallway(stdscr, show_prompt, box_prompt, artifact_message, box_interaction_message)
