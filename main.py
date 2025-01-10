@@ -205,26 +205,35 @@ def main_game(stdscr):
     curses.init_pair(6, curses.COLOR_MAGENTA, curses.COLOR_BLACK)
     curses.init_pair(7, curses.COLOR_CYAN, curses.COLOR_BLACK)
 
+    last_input_time = time.time()
+
     while game_running:
         key = stdscr.getch()
+        current_time = time.time()
 
         if key == curses.KEY_UP or key == ord('w'):
             if not paused:
                 move_player(speed * math.cos(player_angle), speed * math.sin(player_angle))
+                last_input_time = current_time
         elif key == curses.KEY_DOWN or key == ord('s'):
             if not paused:
                 move_player(-speed * math.cos(player_angle), -speed * math.sin(player_angle))
+                last_input_time = current_time
         elif key == curses.KEY_LEFT or key == ord('a'):
             player_angle -= rotation_speed
+            last_input_time = current_time
         elif key == curses.KEY_RIGHT or key == ord('d'):
             player_angle += rotation_speed
+            last_input_time = current_time
         elif key == ord(' '):
             if not artifact_picked and abs(player_x - artifact_x) < 0.5 and abs(player_y - artifact_y) < 0.5:
                 artifact_picked = True
             elif artifact_picked and abs(player_x - box_x) < 0.5 and abs(player_y - box_y) < 0.5:
                 game_won = True
+            last_input_time = current_time
         elif key == ord('r'):
             reset_game()
+            last_input_time = current_time
         elif key == ord('e'):
             settings_menu(stdscr)
         elif key == ord('p'):
@@ -232,7 +241,8 @@ def main_game(stdscr):
         elif key == ord('q'):
             game_running = False
 
-        render_scene(stdscr)
+        if current_time - last_input_time < 0.2 or game_won:
+            render_scene(stdscr)
 
 def main(stdscr):
     selection = main_menu(stdscr)
